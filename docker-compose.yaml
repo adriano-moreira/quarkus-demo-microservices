@@ -1,0 +1,61 @@
+services:
+
+  bff-jvm: &bff-jvm
+    image: docker.io/adrianomoreira86/quarkus-demo-bff:jvm
+    ports:
+      - "9001:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 1GB
+          cpus: 2.0
+    environment:
+      # quarkus.http.access-log.enabled: true
+      quarkus.log.level: WARN
+      quarkus.rest-client.ms1.url: http://ms1-jvm:8080
+
+  ms1-jvm: &ms1-jvm
+    image: docker.io/adrianomoreira86/quarkus-demo-ms1:jvm
+    ports:
+      - "9002:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 1GB
+          cpus: 2.0
+    environment:
+      # quarkus.http.access-log.enabled: true
+      quarkus.log.level: WARN
+      quarkus.datasource.db-kind: postgresql
+      quarkus.datasource.jdbc.url: jdbc:postgresql://postgres:5432/db_name
+      quarkus.datasource.username: admin
+      quarkus.datasource.password: admin
+
+
+  bff-native:
+    <<: *bff-jvm
+    image: docker.io/adrianomoreira86/quarkus-demo-bff:native
+    profiles:
+      - native
+    ports:
+      - 9003:8080
+    environment:
+      # quarkus.http.access-log.enabled: true
+      quarkus.log.level: WARN
+      quarkus.rest-client.ms1.url: http://ms1-native:8080
+
+
+  ms1-native:
+    <<: *bff-jvm
+    image: docker.io/adrianomoreira86/quarkus-demo-bff:native
+    profiles:
+      - native
+    ports:
+      - 9004:8080
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: "db_name"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
