@@ -11,15 +11,15 @@ public class ErrorResource {
     @GET
     @Path( "/400")
     public String e400() {
-        Log.info( "into resource error/400");
-        throw new InternalServerErrorException("my error 400");
+        Log.warn( "into resource error/400");
+        throw new InternalServerErrorException("error 400");
     }
 
     @GET
     @Path( "/500")
     public String e500() {
-        Log.info( "into resource error/500");
-        throw new InternalServerErrorException("my error 500");
+        Log.error( "into resource error/500");
+        throw new InternalServerErrorException("error 500");
     }
 
 }

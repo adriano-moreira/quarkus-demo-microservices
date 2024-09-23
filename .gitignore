@@ -1,2 +1,5 @@
 .idea
 *.jar
+k6-*.json
+node_modules
+reports
