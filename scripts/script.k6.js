@@ -1,20 +1,13 @@
 import http from 'k6/http'
 import {check, sleep} from 'k6'
 
-const testId = __ENV.TEST_ID; //load-test stress-test breackpoint-test
-const testType = __ENV.TEST_TYPE; //load-test stress-test breackpoint-test
-const vus = __ENV.TEST_TYPE === 'load-test' ? 1 : 60
-const duration = __ENV.TEST_FAST === 'true' ? '10s' : '60s'
+const testId = __ENV.TEST_ID; //to a unique output folder
+const testType = __ENV.TEST_TYPE; //load-test stress-test breakpoint-test
 const runtime = __ENV.RUNTIME //jvm native
-const concurrencyType = __ENV.C_TYPE
+const concurrencyType = __ENV.CONCURRENCY_TYPE//worker-thread, io-thread, virtual-tread
 const testScenario = __ENV.TEST_SCENARIO
 const port = runtime === 'jvm' ? '9001' : '9003'
 const url = `http://localhost:${port}/${concurrencyType}/use/${testScenario}`
-
-export const options = {
-    vus: vus,
-    duration: duration,
-}
 
 function request() {
     const resp = http.get(url)
@@ -26,17 +19,14 @@ function request() {
 
 //small warm-up
 export function setup() {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 100; i++) {
         request()
     }
-    sleep(.2)
+    sleep(2)
 }
 
 export default function () {
     request()
-    // if (testType === 'load-test') {
-    //     sleep(1)
-    // }
 }
 
 //export summary to json

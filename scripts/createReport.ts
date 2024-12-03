@@ -96,6 +96,13 @@ for (let testType of testTypes) {
                 write('|')
             }
             writeln('')
+            write('|' + padding(runtime + '(fails)') + '|')
+            for (let concurrencyType of concurrencyTypes) {
+                const summary = readSummary(testId, testType, runtime, concurrencyType, scenarioTest)
+                write((summary?.root_group.checks.fails ?? 0).toString())
+                write('|')
+            }
+            writeln('')
         }
         writeln('')
 
